@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LEXINDIA — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Literata:ital,wght@0,400;0,500;1,400&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Updated Exact Colors: Navy Blue & Sandy Gold */
+  :root{
+    --bg-color: #F8FAFC; /* Soft modern grey-blue */
+    --surface: #FFFFFF; /* Pure white */
+    --navy: #052140; /* Deep Navy Blue */
+    --navy-hover: #03152a; 
+    --sand-gold: #C4A252; /* Sandy Gold */
+    --sand-gold-hover: #AA8B42;
+    --ink: #0F172A; /* Slate black */
+    --muted: #64748B; /* Soft grey */
+    --border: #E2E8F0; /* Light border */
+  }
+  
+  *{box-sizing:border-box; transition: all 0.2s ease-in-out;}
+  html,body{min-height:100%;margin:0}
+  body{
+    background:var(--bg-color);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(5, 33, 64, 0.05), transparent 55%),
+      radial-gradient(ellipse at bottom right, rgba(196, 162, 82, 0.05), transparent 55%);
+    font-family:'Literata', serif; color:var(--ink);
+    display:flex; align-items:center; justify-content:center; padding:24px; min-height:100vh;
+    padding-top:calc(24px + env(safe-area-inset-top,0px));
+    padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));
+  }
+  
+  .card{
+    width:100%; max-width:420px; background:var(--surface);
+    border:1px solid var(--border); border-radius:12px;
+    padding:40px 40px 30px; position:relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+  
+  .seal{
+    width:56px; height:56px; background:var(--navy); border-radius:12px;
+    display:flex; align-items:center; justify-content:center; margin:0 auto 20px;
+    font-family:'Zilla Slab',serif; font-weight:700; font-size:24px; color:var(--surface);
+    box-shadow: 0 4px 12px rgba(5, 33, 64, 0.2);
+  }
+  h1{font-family:'Zilla Slab',serif; font-weight:700; font-size:26px; text-align:center; margin:0 0 4px; letter-spacing:0.3px; color:var(--navy);}
+  .sub{text-align:center; color:var(--muted); font-size:14px; margin:0 0 28px; font-family:'Work Sans',sans-serif;}
+
+  .tabs{display:flex; border-bottom:1px solid var(--border); margin-bottom:24px}
+  .tab{
+    flex:1; padding:12px 6px; background:none; border:none; border-bottom:3px solid transparent; margin-bottom:-1px;
+    font-family:'Work Sans',sans-serif; font-size:14px; font-weight:600; color:var(--muted); cursor:pointer;
+  }
+  .tab:hover{color:var(--navy);}
+  .tab.active{color:var(--navy); border-bottom-color:var(--navy)}
+
+  label{display:block; font-family:'Work Sans',sans-serif; font-size:13px; font-weight:600; color:var(--ink); margin:0 0 8px;}
+  .field{margin-bottom:20px}
+  input[type=text], input[type=email], input[type=password]{
+    width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:6px;
+    background:#F8FAFC; font-family:'Literata',serif; font-size:15px; color:var(--ink);
+  }
+  input:focus{outline:none; border-color:var(--navy); background:var(--surface); box-shadow: 0 0 0 3px rgba(5, 33, 64, 0.1);}
+  .hint{font-family:'Work Sans',sans-serif; font-size:12px; color:var(--muted); margin-top:6px}
+
+  .role-row{display:flex; gap:10px; margin-bottom:20px}
+  .role-btn{
+    flex:1; padding:10px 6px; border:1px solid var(--border); background:var(--surface); border-radius:6px;
+    font-family:'Work Sans',sans-serif; font-size:13px; color:var(--muted); cursor:pointer; font-weight:500;
+  }
+  .role-btn:hover{border-color:var(--navy); color:var(--navy);}
+  .role-btn.active{border-color:var(--navy); color:var(--navy); background:#F0F4F8; font-weight:700; box-shadow: inset 0 0 0 1px rgba(5, 33, 64, 0.2);}
+
+  button.submit{
+    width:100%; padding:14px; background:var(--sand-gold); color:var(--surface); border:none; border-radius:6px;
+    font-family:'Work Sans',sans-serif; font-size:15px; font-weight:600; letter-spacing:0.3px; cursor:pointer;
+    box-shadow: 0 4px 12px rgba(196, 162, 82, 0.3); margin-top: 8px;
+  }
+  button.submit:hover{background:var(--sand-gold-hover); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(196, 162, 82, 0.4);}
+  button.submit:disabled{opacity:0.6; cursor:wait; transform: none;}
+  
+  .err{
+    color:#DC2626; font-size:13px; margin:0 0 16px; display:none; font-family:'Work Sans',sans-serif;
+    padding:10px 12px; border:1px solid #FCA5A5; background:#FEF2F2; border-radius: 6px; font-weight: 500;
+  }
+  .note{text-align:center; margin-top:24px; font-size:12px; color:var(--muted); font-family:'Work Sans',sans-serif; line-height:1.6}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="seal">L</div>
+  <h1>LEXINDIA</h1>
+  <p class="sub">Legal Research & Case Analysis</p>
+
+  <div class="tabs">
+    <button type="button" class="tab active" id="tabLogin">Sign in</button>
+    <button type="button" class="tab" id="tabSignup">Create account</button>
+  </div>
+
+  <form id="authForm" novalidate>
+    <div id="signupOnly" class="hidden">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" autocomplete="name" placeholder="e.g. A. Ramesh">
+      </div>
+      <label>I am a</label>
+      <div class="role-row">
+        <button type="button" class="role-btn active" data-role="advocate">Advocate</button>
+        <button type="button" class="role-btn" data-role="student">Law Student</button>
+        <button type="button" class="role-btn" data-role="researcher">Researcher</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="email">Email address</label>
+      <input type="email" id="email" autocomplete="email" placeholder="you@example.com">
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" autocomplete="current-password" placeholder="••••••••">
+      <div class="hint hidden" id="pwHint">At least 8 characters.</div>
+    </div>
+
+    <p class="err" id="errMsg"></p>
+    <button type="submit" class="submit" id="submitBtn">Sign in</button>
+  </form>
+
+  <p class="note">Your password is stored securely using industry-standard hashing. Your case files remain private and confidential.</p>
+</div>
+
+<script>
+const BACKEND_URL = "http://127.0.0.1:8000";
+
+// Already signed in? Go straight to the app.
+if (sessionStorage.getItem('lexindia_token')) { window.location.href = 'lexindia_app.html'; }
+
+let mode = 'login';
+let selectedRole = 'advocate';
+
+const tabLogin = document.getElementById('tabLogin');
+const tabSignup = document.getElementById('tabSignup');
+const signupOnly = document.getElementById('signupOnly');
+const pwHint = document.getElementById('pwHint');
+const pwInput = document.getElementById('password');
+const submitBtn = document.getElementById('submitBtn');
+const errMsg = document.getElementById('errMsg');
+
+function setMode(m) {
+  mode = m;
+  tabLogin.classList.toggle('active', m === 'login');
+  tabSignup.classList.toggle('active', m === 'signup');
+  signupOnly.classList.toggle('hidden', m !== 'signup');
+  pwHint.classList.toggle('hidden', m !== 'signup');
+  pwInput.autocomplete = m === 'signup' ? 'new-password' : 'current-password';
+  submitBtn.textContent = m === 'signup' ? 'Create account' : 'Sign in';
+  errMsg.style.display = 'none';
+}
+tabLogin.addEventListener('click', () => setMode('login'));
+tabSignup.addEventListener('click', () => setMode('signup'));
+
+document.querySelectorAll('.role-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedRole = btn.dataset.role;
+  });
+});
+
+function showError(text) {
+  errMsg.textContent = text;
+  errMsg.style.display = 'block';
+}
+
+document.getElementById('authForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errMsg.style.display = 'none';
+
+  const email = document.getElementById('email').value.trim();
+  const password = pwInput.value;
+  const name = document.getElementById('name').value.trim();
+
+  if (!email || !password || (mode === 'signup' && !name)) {
+    showError('Please fill in all the fields.');
+    return;
+  }
+
+  const body = mode === 'signup'
+    ? {name, email, password, role: selectedRole}
+    : {email, password};
+
+  submitBtn.disabled = true;
+  try {
+    const res = await fetch(BACKEND_URL + '/auth/' + mode, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showError(typeof data.detail === 'string' ? data.detail : 'Something went wrong. Please try again.');
+      return;
+    }
+    sessionStorage.setItem('lexindia_token', data.token);
+    sessionStorage.setItem('lexindia_user', JSON.stringify(data.user));
+    window.location.href = 'lexindia_app.html';
+  } catch (err) {
+    showError('Could not reach the server. Check that the backend is running.');
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

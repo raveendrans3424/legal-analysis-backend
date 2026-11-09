@@ -1,0 +1,49 @@
+# Environment variables - NEVER commit these!
+.env
+*.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+venv/
+env/
+.venv/
+ENV/
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# FAISS index (large binary files - regenerate locally)
+faiss_index/
+
+# Uploaded files (user data)
+uploads/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Database dumps
+*.sql.bak
