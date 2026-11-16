@@ -38,7 +38,7 @@ from classification import classify_case
 from retrieval import get_candidates
 from ranking import rerank
 from explanation import generate_explanations_batch
-from utils import save_encrypted_upload, store_case, store_matches
+from utils import save_encrypted_upload, load_encrypted_upload, delete_encrypted_upload, store_case, store_matches
 from config import FINAL_RESULT_COUNT
 from judge import judge_reply, judge_summary
 import judgments as jdg
@@ -277,17 +277,22 @@ def download_my_case_file(case_id: int, current_user: User = Depends(get_current
                           db: Session = Depends(get_db)):
     """Decrypts the stored file in memory and returns the original. Owner only."""
     case = _get_owned_case_or_404(db, case_id, current_user)
-    if not case.file_path or not os.path.exists(case.file_path):
+    if not case.file_path:
         raise HTTPException(status_code=404, detail="File not found")
 
-    with open(case.file_path, "rb") as f:
-        blob = f.read()
+    try:
+        blob = load_encrypted_upload(case.file_path)
+    except Exception:
+        raise HTTPException(status_code=404, detail="File not found")
+
     try:
         data = decrypt_bytes(blob, current_user.id)
     except DecryptionError:
         raise HTTPException(status_code=500, detail="Stored file failed its integrity check.")
 
-    original_ext = os.path.splitext(case.file_path[:-4])[1] or ".bin"
+    # Strip the trailing ".enc" then get the real extension
+    base = case.file_path if not case.file_path.endswith(".enc") else case.file_path[:-4]
+    original_ext = os.path.splitext(base)[1] or ".bin"
     media = {".pdf": "application/pdf", ".png": "image/png", ".jpg": "image/jpeg",
              ".jpeg": "image/jpeg", ".webp": "image/webp", ".bmp": "image/bmp",
              ".tiff": "image/tiff"}.get(original_ext, "application/octet-stream")
@@ -357,7 +362,7 @@ def download_judgment(case_id: int, judgment_id: int, current_user: User = Depen
 @app.delete("/cases/{case_id}")
 def delete_my_case(case_id: int, current_user: User = Depends(get_current_user),
                    db: Session = Depends(get_db)):
-    """Deletes the case record, its matches, and the uploaded file from disk."""
+    """Deletes the case record, its matches, and the uploaded file from disk or S3."""
     case = _get_owned_case_or_404(db, case_id, current_user)
     file_path = case.file_path
 
@@ -367,11 +372,8 @@ def delete_my_case(case_id: int, current_user: User = Depends(get_current_user),
     db.delete(case)
     db.commit()
 
-    try:
-        if file_path and os.path.exists(file_path):
-            os.remove(file_path)
-    except OSError:
-        pass
+    if file_path:
+        delete_encrypted_upload(file_path)
 
     return {"deleted": True}
 

@@ -82,6 +82,14 @@ OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3")
 INDIAN_KANOON_API_KEY = os.getenv("INDIAN_KANOON_API_KEY", "")
 
+# ---------- AWS S3 (file uploads) ----------
+AWS_ACCESS_KEY_ID     = os.getenv("AWS_ACCESS_KEY_ID", "")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "")
+AWS_S3_BUCKET         = os.getenv("AWS_S3_BUCKET", "")
+AWS_REGION            = os.getenv("AWS_REGION", "ap-south-1")
+# If all S3 vars are set, uploads go to S3; otherwise falls back to local disk.
+USE_S3 = bool(AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY and AWS_S3_BUCKET)
+
 # ---------- Retrieval / ranking tuning ----------
 FAISS_TOP_K = 20          # candidates pulled from vector search before re-ranking
 FINAL_RESULT_COUNT = 5    # provisions returned to the frontend
